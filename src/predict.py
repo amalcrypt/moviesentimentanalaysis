@@ -32,6 +32,10 @@ def predict_transformer(text: str) -> dict:
     device = _transformer_cache["device"]
 
     inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=256, padding="max_length").to(device)
+    
+    if "token_type_ids" in inputs:
+        del inputs["token_type_ids"]
+
     with torch.no_grad():
         outputs = model(**inputs)
         probs = torch.nn.functional.softmax(outputs.logits, dim=-1)

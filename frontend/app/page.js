@@ -18,14 +18,12 @@ export default function Home() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [analyzedText, setAnalyzedText] = useState("");
 
   async function analyzeSentiment() {
     if (!text.trim()) return;
     setLoading(true);
     setError("");
     setResult(null);
-    setAnalyzedText("");
 
     try {
       const res = await fetch(`${API_BASE}/predict`, {
@@ -41,7 +39,6 @@ export default function Home() {
 
       const data = await res.json();
       setResult(data);
-      setAnalyzedText(text.trim());
     } catch (err) {
       setError(err.message);
     } finally {
@@ -156,12 +153,6 @@ export default function Home() {
 
             {result && !loading && (
               <div className={`${styles.resultContent} animate-in`}>
-                {/* ── HIGHLIGHTED REVIEW BLOCK ── */}
-                <div className={styles.highlightedReviewContainer}>
-                  <div className={styles.highlightedReviewLabel}>Analyzed Review</div>
-                  <HighlightedReview text={analyzedText} sentiment={result.sentiment} />
-                </div>
-
                 <div className={styles.resultStatsGrid}>
                   <div
                     className={`${styles.sentimentBadge} ${
@@ -313,29 +304,4 @@ function EvaluationTab() {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   HIGHLIGHTED REVIEW COMPONENT
-   ═══════════════════════════════════════════════════════════════════════════ */
-function HighlightedReview({ text, sentiment }) {
-  if (!text) return null;
-  const posWords = ['good', 'great', 'excellent', 'amazing', 'masterpiece', 'beautiful', 'fantastic', 'loved', 'love', 'best', 'incredible', 'perfect', 'wonderful', 'brilliant', 'superb', 'phenomenal', 'outstanding', 'enjoyed', 'masterclass', 'stellar'];
-  const negWords = ['bad', 'terrible', 'awful', 'worst', 'boring', 'horrible', 'waste', 'poor', 'disappointing', 'dull', 'stupid', 'garbage', 'crap', 'disaster', 'mess', 'hated', 'lame', 'wasted'];
 
-  const tokens = text.split(/(\\s+)/);
-  return (
-    <div className={`${styles.highlightTextWrapper} ${sentiment === 'positive' ? styles.highlightWrapperPos : styles.highlightWrapperNeg}`}>
-      <span className={styles.quoteMark}>❝</span>
-      {tokens.map((token, i) => {
-        const clean = token.toLowerCase().replace(/[^a-z]/g, '');
-        if (posWords.includes(clean)) {
-          return <mark key={i} className={styles.markPositive}>{token}</mark>;
-        }
-        if (negWords.includes(clean)) {
-          return <mark key={i} className={styles.markNegative}>{token}</mark>;
-        }
-        return <span key={i}>{token}</span>;
-      })}
-      <span className={styles.quoteMark}>❞</span>
-    </div>
-  );
-}
