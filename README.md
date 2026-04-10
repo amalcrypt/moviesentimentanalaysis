@@ -20,12 +20,12 @@ An end-to-end sentiment analysis system that classifies text (movie reviews, pro
 
 ## 🏗️ Architecture
 
-`
+```
 ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
 │  Next.js    │ ──▶ │   FastAPI   │ ──▶ │ DistilBERT  │
 │  Frontend   │     │   Backend   │     │  (PyTorch)  │
 └─────────────┘     └─────────────┘     └─────────────┘
-`
+```
 
 ## 🚀 Quick Start
 
